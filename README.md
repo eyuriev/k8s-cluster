@@ -1,4 +1,6 @@
-# Installing Prerequisites
+# Kubernetes on CentOS 7/8 with Firewalld
+
+## Installing Prerequisites
 To get started we need to configure all of the VMs with a container runtime (docker in our case) and kubernetes packages. To do this, please go ahead and run the following script in all of your nodes using the following command.
 
 ```
@@ -6,8 +8,10 @@ sudo su -
 curl -s https://raw.githubusercontent.com/eyuriev/k8s-cluster/main/k8s-centos.sh | sh -s
 ```
 
-# Open Ports on Firewall
+## Open Ports on Firewall
 With firewalld enabled, you have to open the following ports in order for Kubernetes to work properly. Please note that if you are running this in Cloud, you need to enable these ports on your particular VPC subnet as well.
+
+[Check required ports](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports)
 
 On Master open the following ports and restart the service
 ```
@@ -34,7 +38,7 @@ firewall-cmd --add-masquerade --permanent
 systemctl restart firewalld
 ```
 
-# Init the master
+## Init the master
 Passing `--pod-network-cidr=10.244.0.0/16` because Flannel CNI is used.
 ```
 kubeadm init --pod-network-cidr=10.244.0.0/16
@@ -46,29 +50,29 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-# Install [Flannel](https://github.com/flannel-io/flannel)
+## Install [Flannel](https://github.com/flannel-io/flannel)
 You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at: https://kubernetes.io/docs/concepts/cluster-administration/addons/
+Run `kubectl apply -f [podnetwork].yaml` with one of the options listed at: https://kubernetes.io/docs/concepts/cluster-administration/addons/
 
 For Kubernetes v1.17+
 ```
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
-**NOTE:** If kubeadm is used, then pass --pod-network-cidr=10.244.0.0/16 to kubeadm init to ensure that the podCIDR is set.
+**NOTE:** If kubeadm is used, then pass `--pod-network-cidr=10.244.0.0/16` to kubeadm init to ensure that the podCIDR is set.
 
 With this completed, Your master should be in a ready state in a couple of mins. You can check status by running.
 ```
 kubectl get nodes
 ```
 
-# Join the Workers
+## Join the Workers
 Now since Master is configured, you can go ahead and join any number of worker nodes you need by running the join command you copy pasted and saved after you ran the `kubeadm init` command. If you have lost it, don’t worry we can always generate a new one by running on the Master the following (as root user):
 ```
 kubeadm token create --print-join-command
 ```
 Run the join command on the terminals of the worker nodes as root.
 
-# Running an Application in the Cluster
+## Running an Application in the Cluster
 Still within the master node, execute the following command to create a deployment named _nginx_:
 ```
 kubectl create deployment nginx --image=nginx
