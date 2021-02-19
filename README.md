@@ -19,8 +19,9 @@ sudo reboot
 ```
 
 ## Installing Prerequisites
-To get started we need to configure all of the VMs with a container runtime (docker in our case) and kubernetes packages. To do this, please go ahead and run the following script in all of your nodes using the following command:
+To get started we need to configure all of the VMs with a container runtime (docker in our case) and Kubernetes packages. Script installing **Kubernetes 1.16.8**. If you need another Kubernetes version then go to `k8s-centos.sh` and edit line with `yum -y install kubelet-1.16.8 kubeadm-1.16.8 kubectl-1.16.8` to required package version. For example if you need the latest version then edit it as `yum -y install kubelet kubeadm kubectl`
 
+Then run the following script in all of your nodes using the following command:
 ```
 sudo su -
 curl -s https://raw.githubusercontent.com/eyuriev/k8s-cluster/main/k8s-centos.sh | sh -s
