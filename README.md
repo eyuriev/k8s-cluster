@@ -5,9 +5,21 @@
 - 1-2x Worker VMs with minimum 2vCPU and 2GB of RAM (You can change this config according to the workloads you run)
 
 CentOS 7/8 should be installed on all the machines. I used VirtualBox images of CentOS 8.3.2011 from https://www.linuxvmimages.com/images/virtualbox/ ("Regular Download" was really faster than "Faster Download").
+Make sure that all VMs are connected to the same network. I used "Bridged Adapter" to allow all VMs have Internet connection.
+
+Set the hostname on each VM (optional):
+```
+# On Master
+sudo hostnamectl set-hostname k8s-master.linuxvmimages.local
+sudo reboot
+
+# On Worker 1
+sudo hostnamectl set-hostname k8s-worker1.linuxvmimages.local
+sudo reboot
+```
 
 ## Installing Prerequisites
-To get started we need to configure all of the VMs with a container runtime (docker in our case) and kubernetes packages. To do this, please go ahead and run the following script in all of your nodes using the following command.
+To get started we need to configure all of the VMs with a container runtime (docker in our case) and kubernetes packages. To do this, please go ahead and run the following script in all of your nodes using the following command:
 
 ```
 sudo su -
@@ -19,7 +31,7 @@ With firewalld enabled, you have to open the following ports in order for Kubern
 
 [Check required ports](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports)
 
-On Master open the following ports and restart the service
+On Master open the following ports and restart the service:
 ```
 firewall-cmd --permanent --add-port=6443/tcp
 firewall-cmd --permanent --add-port=2379-2380/tcp
@@ -34,7 +46,7 @@ firewall-cmd --permanent --add-port=30000-32767/tcp
 systemctl restart firewalld
 ```
 
-On Worker Nodes open the following ports and restart the service
+On Worker Nodes open the following ports and restart the service:
 ```
 firewall-cmd --permanent --add-port=10250/tcp
 firewall-cmd --permanent --add-port=10255/tcp
@@ -45,7 +57,7 @@ systemctl restart firewalld
 ```
 
 ## Init the master
-Passing `--pod-network-cidr=10.244.0.0/16` because Flannel CNI is used.
+Passing `--pod-network-cidr=10.244.0.0/16` because [Flannel](https://github.com/flannel-io/flannel) CNI is used.
 ```
 kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
