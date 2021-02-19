@@ -1,17 +1,14 @@
 #!/bin/bash
 
 sudo yum update -y
-sudo yum install -y net-tools wget telnet yum-utils device-mapper-persistent-data lvm2
+sudo yum install -y net-tools bind-utils wget telnet yum-utils device-mapper-persistent-data lvm2
 
 ## Add the Docker repository
 sudo yum-config-manager --add-repo \
   https://download.docker.com/linux/centos/docker-ce.repo -y
 
 # Install Docker CE
-sudo yum update -y && sudo yum install -y \
-  containerd.io \
-  docker-ce \
-  docker-ce-cli
+sudo yum update -y && sudo yum install -y containerd.io docker-ce docker-ce-cli
 
 ## Create /etc/docker
 sudo mkdir /etc/docker
