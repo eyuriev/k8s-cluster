@@ -1,11 +1,7 @@
 #!/bin/bash
 
-##
-## Run this script under root
-##
-
-yum -y update
-yum -y install net-tools wget telnet yum-utils device-mapper-persistent-data lvm2
+sudo yum update -y
+sudo yum install -y net-tools wget telnet yum-utils device-mapper-persistent-data lvm2
 
 ## Add the Docker repository
 sudo yum-config-manager --add-repo \
@@ -39,33 +35,36 @@ EOF
 sudo mkdir -p /etc/systemd/system/docker.service.d
 
 # Restart Docker
-systemctl daemon-reload
-systemctl enable docker
-systemctl restart docker
+sudo systemctl daemon-reload
+sudo systemctl enable docker
+sudo systemctl restart docker
 
 # Disable swap
-swapoff -a
-sed -i 's/^\(.*swap.*\)$/#\1/' /etc/fstab 
-
+sudo swapoff -a
+sudo sed -i 's/^\(.*swap.*\)$/#\1/' /etc/fstab 
 
 # Installing kubeadm
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 # load netfilter probe specifically
-modprobe br_netfilter
+sudo modprobe br_netfilter
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
 
 # Set SELinux in permissive mode (effectively disabling it)
 sudo setenforce 0
 sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
 # Enable IP Forwarding
-echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
-cat <<EOF >  /etc/sysctl.d/k8s.conf
+# echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+echo '1' | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
-sysctl --system
+sudo sysctl --system
 
-# Install kuberentes packages
+# Install Kuberentes packages
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -79,8 +78,8 @@ EOF
 
 # In our case install versions like in OCI PROD 1.16.8
 # yum -y install kubectl kubelet kubeadm
-yum -y install kubelet-1.16.8 kubeadm-1.16.8 kubectl-1.16.8
+sudo yum install -y kubelet-1.16.8 kubeadm-1.16.8 kubectl-1.16.8 --disableexcludes=kubernetes
 
 # Restart and enable Kubelet
-systemctl daemon-reload
-systemctl restart kubelet && systemctl enable kubelet
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet && systemctl enable kubelet
