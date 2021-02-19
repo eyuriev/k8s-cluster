@@ -23,7 +23,6 @@ To get started we need to configure all of the VMs with a container runtime (doc
 
 Then run the following script in all of your nodes using the following command:
 ```
-sudo su -
 curl -s https://raw.githubusercontent.com/eyuriev/k8s-cluster/main/k8s-centos.sh | sh -s
 ```
 
