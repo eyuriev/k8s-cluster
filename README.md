@@ -33,33 +33,33 @@ With firewalld enabled, you have to open the following ports in order for Kubern
 
 On Master open the following ports and restart the service:
 ```
-firewall-cmd --permanent --add-port=6443/tcp
-firewall-cmd --permanent --add-port=2379-2380/tcp
-firewall-cmd --permanent --add-port=10250/tcp
-firewall-cmd --permanent --add-port=10251/tcp
-firewall-cmd --permanent --add-port=10252/tcp
-firewall-cmd --permanent --add-port=10255/tcp
-firewall-cmd --permanent --add-port=8472/udp
-firewall-cmd --add-masquerade --permanent
+sudo firewall-cmd --permanent --add-port=6443/tcp
+sudo firewall-cmd --permanent --add-port=2379-2380/tcp
+sudo firewall-cmd --permanent --add-port=10250/tcp
+sudo firewall-cmd --permanent --add-port=10251/tcp
+sudo firewall-cmd --permanent --add-port=10252/tcp
+sudo firewall-cmd --permanent --add-port=10255/tcp
+sudo firewall-cmd --permanent --add-port=8472/udp
+sudo firewall-cmd --add-masquerade --permanent
 # only if you want NodePorts exposed on control plane IP as well
-firewall-cmd --permanent --add-port=30000-32767/tcp
-systemctl restart firewalld
+sudo firewall-cmd --permanent --add-port=30000-32767/tcp
+sudo systemctl restart firewalld
 ```
 
 On Worker Nodes open the following ports and restart the service:
 ```
-firewall-cmd --permanent --add-port=10250/tcp
-firewall-cmd --permanent --add-port=10255/tcp
-firewall-cmd --permanent --add-port=8472/udp
-firewall-cmd --permanent --add-port=30000-32767/tcp
-firewall-cmd --add-masquerade --permanent
-systemctl restart firewalld
+sudo firewall-cmd --permanent --add-port=10250/tcp
+sudo firewall-cmd --permanent --add-port=10255/tcp
+sudo firewall-cmd --permanent --add-port=8472/udp
+sudo firewall-cmd --permanent --add-port=30000-32767/tcp
+sudo firewall-cmd --add-masquerade --permanent
+sudo systemctl restart firewalld
 ```
 
 ## Init the master
 Passing `--pod-network-cidr=10.244.0.0/16` because [Flannel](https://github.com/flannel-io/flannel) CNI is used.
 ```
-kubeadm init --pod-network-cidr=10.244.0.0/16
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
 To start using your cluster, you need to run the following as a regular user:
 ```
