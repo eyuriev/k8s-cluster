@@ -1,5 +1,11 @@
 # Kubernetes on CentOS 7/8 with Firewalld
 
+## Minimum System Requirements
+- 1x Master VM with minimum 2vCPU and 2GB of RAM
+- 1-2x Worker VMs with minimum 2vCPU and 2GB of RAM (You can change this config according to the workloads you run)
+
+CentOS 7/8 should be installed on all the machines. I used VirtualBox images of CentOS 8.3.2011 from https://www.linuxvmimages.com/images/virtualbox/ ("Regular Download" was really faster than "Faster Download").
+
 ## Installing Prerequisites
 To get started we need to configure all of the VMs with a container runtime (docker in our case) and kubernetes packages. To do this, please go ahead and run the following script in all of your nodes using the following command.
 
