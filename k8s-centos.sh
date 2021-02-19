@@ -82,4 +82,4 @@ sudo yum install -y kubelet-1.16.8 kubeadm-1.16.8 kubectl-1.16.8 --disableexclud
 
 # Restart and enable Kubelet
 sudo systemctl daemon-reload
-sudo systemctl restart kubelet && systemctl enable kubelet
+sudo systemctl restart kubelet && sudo systemctl enable kubelet
